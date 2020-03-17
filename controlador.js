@@ -2,7 +2,25 @@ const controlador = {
     // Variaveis
     cartas: document.querySelectorAll('.memory-card'),
 
-    sequencia: [],
+    listaFigurinhas: {
+     "FIGURINHAS": [
+        {"figura": "anjinho"},
+        {"figura": "bidu"},
+        {"figura": "cascao"},
+        {"figura": "cebolinha"},
+        {"figura": "chicobento"},
+        {"figura": "docontra"},
+        {"figura": "franjinha"},
+        {"figura": "jeremias"},
+        {"figura": "magali"},
+        {"figura": "marina"},
+        {"figura": "monica"},
+        {"figura": "nimbus"},
+        {"figura": "rosinha"},
+        {"figura": "sansao"},
+        {"figura": "turminha"},
+        {"figura": "xaveco"}]
+    },
     
     quadroTravado: false,
     temCartaVirada: false,
@@ -19,8 +37,6 @@ const controlador = {
     })(), */
 
     // Funcoes
-    
-
     desvirarCartas: () => {
         lockBoard = true
         setTimeout(() => {
@@ -47,8 +63,6 @@ const controlador = {
         [primeiraCarta, segundaCarta] = [null, null]
     },
 
-    render: (template, value) => { return Mustache.render(template, value) },
-
     virarCarta: () => {
         /* if (this.quadroTravado) return
 
@@ -66,14 +80,36 @@ const controlador = {
         this.segundaCarta = this
         checarCombinacao() */
 
-        console.log(this)
     },
     
     adicionarEventoClique: (cartas, virarCarta) => { 
         cartas.forEach(carta => carta.addEventListener('click', virarCarta))
     },
+    
+    render: (template, value) => { return Mustache.render(template, value) },
+
+    renderElement: (rendered, selector) => {
+        let node = document.querySelector(selector);
+        if (!node) return;
+        node.innerHTML = rendered;
+    },
+
+    carregarFigurinhas: () => {
+        let template = 
+        '{{#FIGURINHAS}}' +
+            '<div class="jogo-memoria" id="jogo-memoria">' +
+                '<div class="carta-memoria">' +
+                    '<img class="back-face" ' + 'src=' + '"img/{{figura}}' + '.png"' + ' />' +
+                '</div>' +
+            '</div>' +
+        '{{/FIGURINHAS}}'
+
+        let rendered = controlador.render(template, controlador.listaFigurinhas)
+        controlador.renderElement(rendered, '.containerFigurinhas')
+    },
 
     iniciarControle: function() {
-        this.adicionarEventoClique(this.cartas, this.virarCarta.bind(controlador))
+        // this.adicionarEventoClique(this.cartas, this.virarCarta.bind(controlador))
+        this.carregarFigurinhas()
     }
-}
+}   
