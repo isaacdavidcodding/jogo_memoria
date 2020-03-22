@@ -1,32 +1,6 @@
 const controlador = {
     // Variaveis
-    cartas: document.querySelectorAll('.memory-card'),
-
-    listaFigurinhas: {
-     "FIGURINHAS": [
-        {"figura": "anjinho"},
-        {"figura": "bidu"},
-        {"figura": "cascao"},
-        {"figura": "cebolinha"},
-        {"figura": "chicobento"},
-        {"figura": "docontra"},
-        {"figura": "franjinha"},
-        {"figura": "jeremias"},
-        {"figura": "magali"},
-        {"figura": "marina"},
-        {"figura": "monica"},
-        {"figura": "nimbus"},
-        {"figura": "rosinha"},
-        {"figura": "sansao"},
-        {"figura": "turminha"},
-        {"figura": "xaveco"}]
-    },
     
-    quadroTravado: false,
-    temCartaVirada: false,
-
-    primeiraCarta: null, 
-    segundaCarta: null,
 
     /*
     (function shuffle() {
@@ -37,7 +11,7 @@ const controlador = {
     })(), */
 
     // Funcoes
-    desvirarCartas: () => {
+   /*  desvirarCartas: () => {
         lockBoard = true
         setTimeout(() => {
             primeiraCarta.classList.remove('flip')
@@ -61,7 +35,7 @@ const controlador = {
     resetarQuadro: () => {
         [temCartaVirada, quadroTravado] = [false, false]
         [primeiraCarta, segundaCarta] = [null, null]
-    },
+    }, */
 
     virarCarta: () => {
         /* if (this.quadroTravado) return
@@ -82,9 +56,9 @@ const controlador = {
 
     },
     
-    adicionarEventoClique: (cartas, virarCarta) => { 
+   /*  adicionarEventoClique: (cartas, virarCarta) => { 
         cartas.forEach(carta => carta.addEventListener('click', virarCarta))
-    },
+    }, */
     
     render: (template, value) => { return Mustache.render(template, value) },
 
@@ -95,21 +69,28 @@ const controlador = {
     },
 
     carregarFigurinhas: () => {
+        let listaFigurinhas = { "FIGURINHAS": [] }
+
+        for (let x = 1; x <= 12; x++) 
+            listaFigurinhas["FIGURINHAS"].push({"figura": x, "id": x}) 
+        
+        for (let x = 1; x <= 12; x++)
+            listaFigurinhas["FIGURINHAS"].push({"figura": x, "id": 12 + x}) 
+
         let template = 
         '{{#FIGURINHAS}}' +
-            '<div class="jogo-memoria" id="jogo-memoria">' +
-                '<div class="carta-memoria">' +
-                    '<img class="back-face" ' + 'src=' + '"img/{{figura}}' + '.png"' + ' />' +
-                '</div>' +
+            '<div class="cartaMemoria">' +
+                '<img class="verso" ' + 'id="{{id}}" ' + 'src=' + '"img/verso' + '.webp"' + ' />' +
+                '<img class="frente" ' + 'id="{{id}}" ' + 'src=' + '"img/{{figura}}' + '.webp"' + ' />' +
             '</div>' +
         '{{/FIGURINHAS}}'
 
-        let rendered = controlador.render(template, controlador.listaFigurinhas)
+        let rendered = controlador.render(template, listaFigurinhas)
         controlador.renderElement(rendered, '.containerFigurinhas')
     },
 
     iniciarControle: function() {
-        // this.adicionarEventoClique(this.cartas, this.virarCarta.bind(controlador))
         this.carregarFigurinhas()
+        // this.adicionarEventoClique(this.cartas, this.virarCarta.bind(controlador))
     }
 }   

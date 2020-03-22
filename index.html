@@ -4,22 +4,15 @@
         <title>Jogo da Memória</title>
 
         <!-- CSS -->
-        <link href="bootstrap.min.css" />
+        <link rel="stylesheet" href="reset.css" />
+        <link rel="stylesheet" href="style.css" />
 
         <!-- Javascript -->
-        <script src="mustache.min.js"></script>
+        <script type="text/javascript" src="mustache.min.js"></script>
     </head>
     <body>
         <!-- container para colocar a sequencia de figurinhas -->
-        <div class="form-group">
-            <div class="container-fluid containerFigurinhas"></div>
-        </div>
-
-        <!-- <section class="jogo-memoria">
-            <div class="carta-memoria">
-                <img class="back-face" src="img/turminha.png" />
-            </div>
-        </section>  -->
+        <div class="containerFigurinhas"></div>
 
         <!-- Inicia o controle -->
         <script type="text/javascript" src="controlador.js"></script>
