@@ -16,6 +16,7 @@ body {
     margin: auto;
     display: flex;
     flex-wrap: wrap;
+    perspective: 1000px;
 }
 
 .cartaMemoria {
@@ -24,11 +25,17 @@ body {
     margin: 5px;
     position: relative;
     transform: scale(1);
+    transform-style: preserve-3d;
+    transition: transform.5s;
 }
 
 .cartaMemoria:active {
     transform: scale(.94);   
     transition: transform .2s; 
+}
+
+.cartaMemoria.girar {
+    transform: rotateY(180deg);    
 }
 
 .verso, .frente {
@@ -38,6 +45,12 @@ body {
     position: absolute;
     border-radius: 5px;
     background: #301934;
+    backface-visibility: hidden;
+}
+
+.frente {
+    transform: rotateY(180deg);    
+
 }
 
 

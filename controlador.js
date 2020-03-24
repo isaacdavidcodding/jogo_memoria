@@ -1,18 +1,24 @@
 const controlador = {
     
-    adicionarEventoClique: () => { 
-        let lista = document.querySelectorAll('.cartaMemoria')
-        console.log(lista)
-
-    }, 
-    
     render: (template, value) => { return Mustache.render(template, value) },
-
+    
     renderElement: (rendered, selector) => {
         let node = document.querySelector(selector);
         if (!node) return;
         node.innerHTML = rendered;
     },
+
+    adicionarEventoClique: () => { 
+        let lista = document.querySelectorAll('.cartaMemoria')
+
+        function virarCarta(elemento) {
+            elemento.classList.toggle('girar')
+        }
+         
+        lista.forEach(
+            atual => atual.addEventListener('click', () => { virarCarta(atual) })  
+        )
+    }, 
 
     carregarFigurinhas: () => {
         let listaFigurinhas = { "FIGURINHAS": [] }
@@ -26,7 +32,7 @@ const controlador = {
         let template = 
         '{{#FIGURINHAS}}' +
             '<div class="cartaMemoria">' +
-                '<img class="verso" ' + 'id="{{id}}" ' + 'src=' + '"img/verso' + '.webp"' + ' />' +
+                '<img class="verso" '  + 'id="{{id}}" ' + 'src=' + '"img/verso'      + '.webp"' + ' />' +
                 '<img class="frente" ' + 'id="{{id}}" ' + 'src=' + '"img/{{figura}}' + '.webp"' + ' />' +
             '</div>' +
         '{{/FIGURINHAS}}'
