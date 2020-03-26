@@ -1,22 +1,42 @@
 const controlador = {
-    
+    cliclouDuasVezes: false,
+    primeiraCarta: null, segundaCarta: null,
+
     render: (template, value) => { return Mustache.render(template, value) },
     
     renderElement: (rendered, selector) => {
         let node = document.querySelector(selector);
-        if (!node) return;
-        node.innerHTML = rendered;
+        if (!node) return
+        node.innerHTML = rendered
+    },
+
+    virarCarta: (elemento) => {
+        elemento.classList.add('girar')
+        
+        if (!controlador.cliclouDuasVezes) {
+            controlador.cliclouDuasVezes = true
+            controlador.primeiraCarta = elemento
+        } else {
+            controlador.cliclouDuasVezes = false
+            controlador.segundaCarta = elemento
+            
+            if (controlador.primeiraCarta.dataset["informacao"] === controlador.segundaCarta.dataset["informacao"]) {
+                controlador.primeiraCarta.removeEventListener('click', controlador.virarCarta)
+                controlador.segundaCarta.removeEventListener('click', controlador.virarCarta)
+            } else {
+                setTimeout(() => {
+                    controlador.primeiraCarta.classList.remove('girar')
+                    controlador.segundaCarta.classList.remove('girar')
+                }, 1500)
+            }
+        }
     },
 
     adicionarEventoClique: () => { 
         let lista = document.querySelectorAll('.cartaMemoria')
-
-        function virarCarta(elemento) {
-            elemento.classList.toggle('girar')
-        }
-         
+        
         lista.forEach(
-            atual => atual.addEventListener('click', () => { virarCarta(atual) })  
+            atual => atual.addEventListener('click', () => { controlador.virarCarta(atual) })  
         )
     }, 
 
@@ -31,7 +51,7 @@ const controlador = {
 
         let template = 
         '{{#FIGURINHAS}}' +
-            '<div class="cartaMemoria">' +
+            '<div class="cartaMemoria" ' + 'data-informacao="{{figura}}"' + '>' +
                 '<img class="verso" '  + 'id="{{id}}" ' + 'src=' + '"img/verso'      + '.webp"' + ' />' +
                 '<img class="frente" ' + 'id="{{id}}" ' + 'src=' + '"img/{{figura}}' + '.webp"' + ' />' +
             '</div>' +
