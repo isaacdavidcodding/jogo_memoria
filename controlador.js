@@ -1,6 +1,7 @@
 const controlador = {
     cliclouDuasVezes: false,
     primeiraCarta: null, segundaCarta: null,
+    telaTravada: false,
 
     render: (template, value) => { return Mustache.render(template, value) },
     
@@ -11,6 +12,8 @@ const controlador = {
     },
 
     virarCarta: (elemento) => {
+        if (controlador.telaTravada || elemento === controlador.primeiraCarta) return
+
         elemento.classList.add('girar')
         
         if (!controlador.cliclouDuasVezes) {
@@ -24,9 +27,11 @@ const controlador = {
                 controlador.primeiraCarta.removeEventListener('click', controlador.virarCarta)
                 controlador.segundaCarta.removeEventListener('click', controlador.virarCarta)
             } else {
+                controlador.telaTravada = true
                 setTimeout(() => {
                     controlador.primeiraCarta.classList.remove('girar')
                     controlador.segundaCarta.classList.remove('girar')
+                    controlador.telaTravada = false
                 }, 1500)
             }
         }
