@@ -45,25 +45,36 @@ const controlador = {
         )
     }, 
 
-    carregarFigurinhas: () => {
-        let listaFigurinhas = { "FIGURINHAS": [] }
+    embaralhar: (listaCartas) => {
+        let indiceAtual = listaCartas.length, valorTemporario, indiceAleatorio;
 
-        for (let x = 1; x <= 12; x++) 
-            listaFigurinhas["FIGURINHAS"].push({"figura": x, "id": x}) 
-        
-        for (let x = 1; x <= 12; x++)
-            listaFigurinhas["FIGURINHAS"].push({"figura": x, "id": 12 + x}) 
+        while (0 !== indiceAtual) {
+            indiceAleatorio = Math.floor(Math.random() * indiceAtual);
+            indiceAtual--
+            valorTemporario = listaCartas[indiceAtual]
+            listaCartas[indiceAtual] = listaCartas[indiceAleatorio]
+            listaCartas[indiceAleatorio] = valorTemporario  
+        } 
+
+        return listaCartas.map( x => { return {"figura": x} }, listaCartas)
+    },
+
+    carregarFigurinhas: () => {
+        let listaNum = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], listaFigurinhas = {"FIGURINHAS": []}
+
+        listaFigurinhas["FIGURINHAS"] = controlador.embaralhar(listaNum)
+        Array.prototype.push.apply(listaFigurinhas["FIGURINHAS"], controlador.embaralhar(listaNum))
 
         let template = 
         '{{#FIGURINHAS}}' +
             '<div class="cartaMemoria" ' + 'data-informacao="{{figura}}"' + '>' +
-                '<img class="verso" '  + 'id="{{id}}" ' + 'src=' + '"img/verso'      + '.webp"' + ' />' +
-                '<img class="frente" ' + 'id="{{id}}" ' + 'src=' + '"img/{{figura}}' + '.webp"' + ' />' +
+                '<img class="verso" '  + 'src=' + '"img/verso'      + '.webp"' + ' />' +
+                '<img class="frente" ' + 'src=' + '"img/{{figura}}' + '.webp"' + ' />' +
             '</div>' +
         '{{/FIGURINHAS}}'
 
         let rendered = controlador.render(template, listaFigurinhas)
-        controlador.renderElement(rendered, '.containerFigurinhas')
+        controlador.renderElement(rendered, '.containerFigurinhas')  
     },
 
     iniciarControle: function() {
