@@ -1,7 +1,6 @@
 const controlador = {
-    cliclouDuasVezes: false,
-    primeiraCarta: null, segundaCarta: null,
-    telaTravada: false,
+    temCartaVirada: false, telaTravada: false,
+    primeiraCarta: null, segundaCarta: null, 
 
     render: (template, value) => { return Mustache.render(template, value) },
     
@@ -11,30 +10,45 @@ const controlador = {
         node.innerHTML = rendered
     },
 
+    reiniciarQuadro: () => {
+       [controlador.cliclouDuasVezes, controlador.telaTravada] = [false, false]
+       [controlador.primeiraCarta, controlador.segundaCarta] = [null, null]
+    },
+
+    verificaPar: (cartaUm, cartaDois) => {
+        let resultado = cartaUm.dataset["informacao"] === cartaDois.dataset["informacao"]
+        resultado ? controlador.desabilitarGiro(cartaUm, cartaDois) : controlador.desvirarCartas(cartaUm, cartaDois) 
+        controlador.reiniciarQuadro()
+    },
+
+    desabilitarGiro: (cartaUm, cartaDois) => {
+        cartaUm.removeEventListener('click', controlador.virarCarta)
+        cartaDois.removeEventListener('click', controlador.virarCarta)
+        controlador.reiniciarQuadro()
+    },
+
+    desvirarCartas: (cartaUm, cartaDois) => {
+        controlador.telaTravada = true
+        setTimeout(() => {
+            cartaUm.classList.remove('girar')
+            cartaDois.classList.remove('girar')
+            controlador.reiniciarQuadro()
+        }, 1200)
+    },
+
     virarCarta: (elemento) => {
-        if (controlador.telaTravada || elemento === controlador.primeiraCarta) return
+        if (controlador.telaTravada) return
+        if (elemento === controlador.primeiraCarta) return
 
         elemento.classList.add('girar')
         
-        if (!controlador.cliclouDuasVezes) {
-            controlador.cliclouDuasVezes = true
+        if (!controlador.temCartaVirada) {
+            controlador.temCartaVirada = true
             controlador.primeiraCarta = elemento
-        } else {
-            controlador.cliclouDuasVezes = false
-            controlador.segundaCarta = elemento
-            
-            if (controlador.primeiraCarta.dataset["informacao"] === controlador.segundaCarta.dataset["informacao"]) {
-                controlador.primeiraCarta.removeEventListener('click', controlador.virarCarta)
-                controlador.segundaCarta.removeEventListener('click', controlador.virarCarta)
-            } else {
-                controlador.telaTravada = true
-                setTimeout(() => {
-                    controlador.primeiraCarta.classList.remove('girar')
-                    controlador.segundaCarta.classList.remove('girar')
-                    controlador.telaTravada = false
-                }, 1500)
-            }
-        }
+            return
+        } 
+        controlador.segundaCarta = elemento
+        controlador.verificaPar(controlador.primeiraCarta, controlador.segundaCarta)   
     },
 
     adicionarEventoClique: () => { 
@@ -48,13 +62,13 @@ const controlador = {
     embaralhar: (listaCartas) => {
         let indiceAtual = listaCartas.length, valorTemporario, indiceAleatorio;
 
-        while (0 !== indiceAtual) {
+        /* while (0 !== indiceAtual) {
             indiceAleatorio = Math.floor(Math.random() * indiceAtual);
             indiceAtual--
             valorTemporario = listaCartas[indiceAtual]
             listaCartas[indiceAtual] = listaCartas[indiceAleatorio]
             listaCartas[indiceAleatorio] = valorTemporario  
-        } 
+        }  */
 
         return listaCartas.map( x => { return {"figura": x} }, listaCartas)
     },
