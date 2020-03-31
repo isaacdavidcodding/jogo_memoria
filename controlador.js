@@ -64,13 +64,13 @@ const controlador = {
     embaralhar: (listaCartas) => {
         let indiceAtual = listaCartas.length, valorTemporario, indiceAleatorio;
 
-        /* while (0 !== indiceAtual) {
+        while (0 !== indiceAtual) {
             indiceAleatorio = Math.floor(Math.random() * indiceAtual);
             indiceAtual--
             valorTemporario = listaCartas[indiceAtual]
             listaCartas[indiceAtual] = listaCartas[indiceAleatorio]
             listaCartas[indiceAleatorio] = valorTemporario  
-        }  */
+        } 
 
         return listaCartas.map( x => { return {"figura": x} }, listaCartas)
     },
