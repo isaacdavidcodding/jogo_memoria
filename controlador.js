@@ -1,5 +1,5 @@
 const controlador = {
-    primeiraCarta: null, segundaCarta: null,
+    primeiraCarta: null, segundaCarta: null, travaClique: false,
 
     render: (template, value) => { return Mustache.render(template, value) },
     
@@ -10,15 +10,17 @@ const controlador = {
     },
 
     reiniciarQuadro: () => {
-        [controlador.primeiraCarta, controlador.segundaCarta] = [null, null] 
+        [controlador.primeiraCarta, controlador.segundaCarta, controlador.travaClique] = [null, null, false] 
     },
 
     desvirarCartas: (cartaUm, cartaDois) => {
+        controlador.travaClique = true
         setTimeout(() => {
             cartaUm.classList.remove('girar')
             cartaDois.classList.remove('girar')
             cartaUm.classList.remove('primeira')
             cartaDois.classList.remove('segunda')
+            controlador.reiniciarQuadro()
         }, 1200)
     },
 
@@ -26,15 +28,17 @@ const controlador = {
         cartaUm.removeEventListener('click', controlador.virarCarta)
         cartaDois.removeEventListener('click', controlador.virarCarta)
         cartaUm.dataset["informacao"] = cartaDois.dataset["informacao"] = 'encontrouPar'
+        controlador.reiniciarQuadro()
     },
 
     verificaPar: (cartaUm, cartaDois) => {
         let resultado = cartaUm.dataset["informacao"] === cartaDois.dataset["informacao"]
         resultado ? controlador.desabilitarGiro(cartaUm, cartaDois) : controlador.desvirarCartas(cartaUm, cartaDois) 
-        controlador.reiniciarQuadro()
     },
 
     virarCarta: (elemento) => {
+        if (controlador.travaClique) return
+
         if (elemento.dataset["informacao"] != 'encontrouPar') {
             if (!controlador.primeiraCarta) {
                 elemento.classList.add('girar')
@@ -44,9 +48,8 @@ const controlador = {
                 elemento.classList.add('girar')
                 elemento.classList.add('segunda')
                 controlador.segundaCarta = elemento
-            }
-            if (!!controlador.primeiraCarta && !!controlador.segundaCarta)
                 controlador.verificaPar(controlador.primeiraCarta, controlador.segundaCarta) 
+            }
         }
     },
 
