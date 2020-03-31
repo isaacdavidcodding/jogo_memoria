@@ -1,6 +1,5 @@
 const controlador = {
-    temCartaVirada: false, telaTravada: false,
-    primeiraCarta: null, segundaCarta: null, 
+    primeiraCarta: null, segundaCarta: null,
 
     render: (template, value) => { return Mustache.render(template, value) },
     
@@ -11,8 +10,22 @@ const controlador = {
     },
 
     reiniciarQuadro: () => {
-       [controlador.cliclouDuasVezes, controlador.telaTravada] = [false, false]
-       [controlador.primeiraCarta, controlador.segundaCarta] = [null, null]
+        [controlador.primeiraCarta, controlador.segundaCarta] = [null, null] 
+    },
+
+    desvirarCartas: (cartaUm, cartaDois) => {
+        setTimeout(() => {
+            cartaUm.classList.remove('girar')
+            cartaDois.classList.remove('girar')
+            cartaUm.classList.remove('primeira')
+            cartaDois.classList.remove('segunda')
+        }, 1200)
+    },
+
+    desabilitarGiro: (cartaUm, cartaDois) => {
+        cartaUm.removeEventListener('click', controlador.virarCarta)
+        cartaDois.removeEventListener('click', controlador.virarCarta)
+        cartaUm.dataset["informacao"] = cartaDois.dataset["informacao"] = 'encontrouPar'
     },
 
     verificaPar: (cartaUm, cartaDois) => {
@@ -21,34 +34,20 @@ const controlador = {
         controlador.reiniciarQuadro()
     },
 
-    desabilitarGiro: (cartaUm, cartaDois) => {
-        cartaUm.removeEventListener('click', controlador.virarCarta)
-        cartaDois.removeEventListener('click', controlador.virarCarta)
-        controlador.reiniciarQuadro()
-    },
-
-    desvirarCartas: (cartaUm, cartaDois) => {
-        controlador.telaTravada = true
-        setTimeout(() => {
-            cartaUm.classList.remove('girar')
-            cartaDois.classList.remove('girar')
-            controlador.reiniciarQuadro()
-        }, 1200)
-    },
-
     virarCarta: (elemento) => {
-        if (controlador.telaTravada) return
-        if (elemento === controlador.primeiraCarta) return
-
-        elemento.classList.add('girar')
-        
-        if (!controlador.temCartaVirada) {
-            controlador.temCartaVirada = true
-            controlador.primeiraCarta = elemento
-            return
-        } 
-        controlador.segundaCarta = elemento
-        controlador.verificaPar(controlador.primeiraCarta, controlador.segundaCarta)   
+        if (elemento.dataset["informacao"] != 'encontrouPar') {
+            if (!controlador.primeiraCarta) {
+                elemento.classList.add('girar')
+                elemento.classList.add('primeira')
+                controlador.primeiraCarta = elemento
+            } else if (!controlador.segundaCarta && !elemento.classList.contains('primeira')) {
+                elemento.classList.add('girar')
+                elemento.classList.add('segunda')
+                controlador.segundaCarta = elemento
+            }
+            if (!!controlador.primeiraCarta && !!controlador.segundaCarta)
+                controlador.verificaPar(controlador.primeiraCarta, controlador.segundaCarta) 
+        }
     },
 
     adicionarEventoClique: () => { 
